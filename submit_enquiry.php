@@ -7,7 +7,7 @@
 </head>
 <body>
 <?php
-if ($!empty($_POST["submit"])){
+if ($!empty($_POST["send"])){
     $name = htmlspecialchars($_POST['name']);
     $mobile = htmlspecialchars($_POST['mobile']);
     $address = htmlspecialchars($_POST['address']);
@@ -61,7 +61,10 @@ if ($!empty($_POST["submit"])){
         <label for="requirement">Enter Your Requirement:</label><br>
         <textarea id="requirement" name="requirement" required></textarea><br><br>
 
-        <input type="submit" value="Submit">
+        <input type="submit" nane="send" value="Submit">
+        <?php if(!empty($message)){?>
+        <?php echo $message; ?>
+        <?php } ?>                           
     </form>
     <a href="index.html">Back to Home</a>
 </body>
