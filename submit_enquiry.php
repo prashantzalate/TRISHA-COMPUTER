@@ -1,21 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enquiry Form</title>
-</head>
-<body>
 <?php
-if ($!empty($_POST["send"])){
-    $name = htmlspecialchars($_POST['name']);
-    $mobile = htmlspecialchars($_POST['mobile']);
-    $address = htmlspecialchars($_POST['address']);
-    $email = htmlspecialchars($_POST['email']);
-    $state = htmlspecialchars($_POST['state']);
-    $requirement = htmlspecialchars($_POST['requirement']);
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    // Email to send the enquiry
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Sanitize and validate inputs
+    $name = htmlspecialchars(trim($_POST['name']));
+    $mobile = htmlspecialchars(trim($_POST['mobile']));
+    $address = htmlspecialchars(trim($_POST['address']));
+    $email = htmlspecialchars(trim($_POST['email']));
+    $state = htmlspecialchars(trim($_POST['state']));
+    $requirement = htmlspecialchars(trim($_POST['requirement']));
+
+    // Validate email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<h1>Error!</h1>";
+        echo "<p>Invalid email format.</p>";
+        exit;
+    }
+
+    // Prepare email
     $to = "prashantzalate04@gmail.com"; // Change to your email
     $subject = "New Enquiry from $name";
     $message = "Name: $name\n";
@@ -24,48 +28,19 @@ if ($!empty($_POST["send"])){
     $message .= "Email: $email\n";
     $message .= "State: $state\n";
     $message .= "Requirement: $requirement\n";
-    
-    // Send the email
-    mail($to, $subject, $message);
+    $headers = "From: $name <$email>\r\n";
+    $headers .= "Reply-To: $email\r\n";
 
-    echo "<h1>Thank You!</h1>";
-    echo "<p>Your enquiry has been submitted successfully.</p>";
-    echo "<p>Name: $name</p>";
-    echo "<p>Email: $email</p>";
-    echo '<a href="index.html">Back to Home</a>';
+    // Send the email
+    if (mail($to, $subject, $message, $headers)) {
+        echo "<h1>Thank You!</h1>";
+        echo "<p>Your enquiry has been submitted successfully.</p>";
+        echo "<p>Name: $name</p>";
+        echo "<p>Email: $email</p>";
+        echo '<a href="index.html">Back to Home</a>';
+    } else {
+        echo "<h1>Error!</h1>";
+        echo "<p>There was a problem sending your enquiry. Please try again later.</p>";
+    }
 }
 ?>
-<h1>Enquiry Form</h1>
-    <form action="submit_enquiry.php" method="POST">
-        <label for="name">Enter Your Name:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
-
-        <label for="mobile">Enter Your Mobile Number:</label><br>
-        <input type="text" id="mobile" name="mobile" required><br><br>
-
-        <label for="address">Enter Your Address:</label><br>
-        <input type="text" id="address" name="address" required><br><br>
-
-        <label for="email">Enter Your E-mail:</label><br>
-        <input type="email" id="email" name="email" required><br><br>
-
-        <label for="state">Select Your State:</label><br>
-        <select id="state" name="state">
-            <option value="State1">State 1</option>
-            <option value="State2">State 2</option>
-            <option value="State3">State 3</option>
-            <option value="State4">State 4</option>
-            <option value="State5">State 5</option>
-        </select><br><br>
-
-        <label for="requirement">Enter Your Requirement:</label><br>
-        <textarea id="requirement" name="requirement" required></textarea><br><br>
-
-        <input type="submit" nane="send" value="Submit">
-        <?php if(!empty($message)){?>
-        <?php echo $message; ?>
-        <?php } ?>                           
-    </form>
-    <a href="index.html">Back to Home</a>
-</body>
-</html>
