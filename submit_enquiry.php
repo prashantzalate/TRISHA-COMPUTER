@@ -1,5 +1,5 @@
 <?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($!empty($_POST["submit"])){
     $name = htmlspecialchars($_POST['name']);
     $mobile = htmlspecialchars($_POST['mobile']);
     $address = htmlspecialchars($_POST['address']);
